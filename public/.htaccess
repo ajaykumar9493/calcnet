@@ -1,0 +1,7 @@
+DirectoryIndex index.html
+
+# Minimal config for InfinityFree — no rewrite rules (each page has its own index.html)
+
+AddType text/css .css
+AddType application/javascript .js
+AddType font/woff2 .woff2

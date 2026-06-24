@@ -1,65 +1,85 @@
-import Image from "next/image";
+import Link from "next/link";
+import { calculators, featuredSlugs, sortCalculators } from "@/config/calculators";
+import { categories } from "@/config/categories";
+import { t } from "@/lib/i18n";
 
-export default function Home() {
+export default function HomePage() {
+  const popular = sortCalculators(
+    calculators.filter((c) => featuredSlugs.includes(c.slug)),
+    "popular"
+  );
+  const latest = sortCalculators(calculators, "new").slice(0, 6);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div>
+      <section className="bg-gradient-to-b from-blue-50 to-white px-4 py-16 dark:from-zinc-900 dark:to-zinc-950 sm:px-6">
+        <div className="mx-auto max-w-4xl text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl">
+            {t("site.name")}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
+            {t("site.tagline")} — accurate formulas, clear explanations, and
+            privacy-first design.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/category/financial"
+            className="mt-8 inline-block rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {t("nav.allCalculators")}
+          </Link>
         </div>
-      </main>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <h2 className="text-2xl font-bold">Popular Calculators</h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {popular.map((calc) => (
+            <Link
+              key={calc.slug}
+              href={`/calculators/${calc.slug}`}
+              className="rounded-xl border border-zinc-200 p-5 transition hover:border-blue-500 hover:shadow-md dark:border-zinc-700 dark:hover:border-blue-500"
+            >
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">{calc.name}</h3>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{calc.shortDescription}</p>
+              {calc.sampleResult && (
+                <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">{calc.sampleResult}</p>
+              )}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-zinc-50 px-4 py-12 dark:bg-zinc-900 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-2xl font-bold">Categories</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/category/${cat.id}`}
+                className="rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-500 dark:border-zinc-700 dark:bg-zinc-800"
+              >
+                <h3 className="font-semibold">{cat.name}</h3>
+                <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{cat.description}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <h2 className="text-2xl font-bold">Latest Calculators</h2>
+        <ul className="mt-4 divide-y divide-zinc-200 dark:divide-zinc-700">
+          {latest.map((calc) => (
+            <li key={calc.slug}>
+              <Link href={`/calculators/${calc.slug}`} className="flex items-center justify-between py-3 hover:text-blue-600">
+                <span>{calc.name}</span>
+                <span className="text-sm text-zinc-500">{calc.addedAt}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
